@@ -3,13 +3,14 @@ import os
 import platform
 from tools.colors import Colors
 
+
 class SceSetupTool:
     """
     This class handles checking installation of the proper tools
     as well as checking if the proper directories are cloned for
     sce development
     """
-    os = ""
+    operating = ""
     color = Colors()
 
     def check_installation(self, name, command, link):
@@ -23,10 +24,10 @@ class SceSetupTool:
             link (string): link to the site to install the software
         """
         devnull = open(os.devnull, 'wb')
-        software = subprocess.check_call(command, stdout=devnull, stderr=subprocess.STDOUT)
-        if software == 0:
+        subprocess.check_call(command, stdout=devnull, stderr=subprocess.STDOUT, shell=True)
+        try:
             self.color.print_yellow(name + " found", True)
-        else:
+        except subprocess.CalledProcessError:
             self.color.print_red(name + " not found", True)
             print("visit here to install: ")
             self.color.print_purple(link, True)
@@ -39,8 +40,8 @@ class SceSetupTool:
         """
         This method checks the user's os and stores it into a class variable
         """
-        self.os = platform.system()
-        self.color.print_purple(self.os, True)
+        self.operating = platform.system()
+        self.color.print_purple(self.operating, True)
 
     def setup_rpc(self):
         """
@@ -50,13 +51,16 @@ class SceSetupTool:
             self.color.print_pink("sce-rpc directory found", True)
             os.chdir("sce-rpc")
             devnull = open(os.devnull, 'wb')
-            subprocess.check_call("git checkout master", stdout=devnull, stderr=subprocess.STDOUT)
-            subprocess.check_call("git fetch origin", stdout=devnull, stderr=subprocess.STDOUT)
-            subprocess.check_call("git reset --hard origin/master", stdout=devnull, stderr=subprocess.STDOUT)
+            subprocess.check_call("git checkout master", stdout=devnull, stderr=subprocess.STDOUT,
+                                  shell=True)
+            subprocess.check_call("git fetch origin", stdout=devnull, stderr=subprocess.STDOUT,
+                                  shell=True)
+            subprocess.check_call("git reset --hard origin/master",
+                                  stdout=devnull, stderr=subprocess.STDOUT, shell=True)
             os.chdir("..")
         else:
             os.system("git clone https://github.com/SCE-Development/sce-rpc")
-            if self.os == "Windows":
+            if self.operating == "Windows":
                 os.system("setup.bat")
             else:
                 os.system("setup.sh")
@@ -86,7 +90,8 @@ class SceSetupTool:
         """
         This method checks for mongo installation
         """
-        self.check_installation("mongo", "mongo --version", "https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials")
+        self.check_installation("mongo", "mongo --version",
+                                "https://www.mongodb.com/try/download/community")
 
     def setup_core_v4(self):
         """
