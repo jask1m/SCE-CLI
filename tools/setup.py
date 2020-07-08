@@ -47,6 +47,7 @@ class SceSetupTool:
         This method is used to specifically check for the sce-rpc directory
         """
         if os.path.isdir("sce-rpc"):
+            self.color.print_pink("sce-rpc directory found", True)
             os.chdir("sce-rpc")
             devnull = open(os.devnull, 'wb')
             subprocess.check_call("git checkout master", stdout=devnull, stderr=subprocess.STDOUT)
@@ -59,6 +60,21 @@ class SceSetupTool:
                 os.system("setup.bat")
             else:
                 os.system("setup.sh")
+
+    def check_directory(self, name):
+        """
+        This method checks for a given directory
+        if the directory is found then git reset is called if work is not found
+        if the directory does not exist then clone the directory
+            Parameters:
+            name (string): the name of the directory
+        """
+        if os.path.isdir(name):
+            self.color.print_pink(name + " directory found", True)
+        else:
+            self.color.print_red(name + " directory not found, cloning for you", True)
+            os.system("git clone https://github.com/SCE-Development/" + name)
+            os.system("cd " + name)
 
     def check_docker(self):
         """
@@ -76,16 +92,10 @@ class SceSetupTool:
         """
         This method checks for the corev4 directory
         """
-        if os.path.isdir("Core-v4"):
-            self.color.print_pink("Core-v4 directory found", True)
-        else:
-            self.color.print_red("Core-v4 directory not found", True)
+        self.check_directory("Core-v4")
 
     def setup_discord_bot(self):
         """
         This method checks for the discord bot directory
         """
-        if os.path.isdir("SCE-discord-bot"):
-            self.color.print_pink("SCE-discord-bot directory found", True)
-        else:
-            self.color.print_red("SCE-discord-bot directory not found", True)
+        self.check_directory("SCE-discord-bot")
