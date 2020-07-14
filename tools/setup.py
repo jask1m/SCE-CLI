@@ -2,6 +2,7 @@ import subprocess
 import os
 import platform
 from tools.colors import Colors
+import threading
 
 
 class SceSetupTool:
@@ -12,6 +13,7 @@ class SceSetupTool:
     """
     operating = ""
     color = Colors()
+    sem = threading.Semaphore()
 
     def check_installation(self, name, command, link):
         """
@@ -47,6 +49,7 @@ class SceSetupTool:
         """
         This method is used to specifically check for the sce-rpc directory
         """
+        self.sem.acquire()
         if os.path.isdir("sce-rpc"):
             self.color.print_pink("sce-rpc directory found", True)
             os.chdir("sce-rpc")
@@ -64,6 +67,7 @@ class SceSetupTool:
                 os.system("setup.bat")
             else:
                 os.system("setup.sh")
+        self.sem.release()
 
     def check_directory(self, name):
         """
@@ -97,10 +101,27 @@ class SceSetupTool:
         """
         This method checks for the corev4 directory
         """
+        self.sem.acquire()
         self.check_directory("Core-v4")
+        self.sem.release()
 
     def setup_discord_bot(self):
         """
         This method checks for the discord bot directory
         """
+        self.sem.acquire()
         self.check_directory("SCE-discord-bot")
+        self.sem.release()
+
+    def handle_setup(self):
+        t1 = threading.Thread(target=self.setup_rpc)
+        t2 = threading.Thread(target=self.setup_core_v4)
+        t3 = threading.Thread(target=self.setup_discord_bot)
+
+        t1.start()
+        t2.start()
+        t3.start()
+
+        t1.join()
+        t2.join()
+        t3.join()
