@@ -2,26 +2,26 @@ import threading
 import time
 import random
 
-pizza_sem = threading.Semaphore()
-spagy_sem = threading.Semaphore()
-costco_sem = threading.Semaphore()
+pizza_sem = threading.Semaphore(value=0)
+spagy_sem = threading.Semaphore(value=0)
+costco_sem = threading.Semaphore(value=0)
 
 
 def bake_pizza():
-    print(' so u wanna bake_pizza ')
     time.sleep(random.randint(1, 5))
+    print('releasing pizza')
     pizza_sem.release()
 
 
 def cook_spaghetti():
-    print(' so u wanna cook_spaghetti ')
     time.sleep(random.randint(1, 5))
+    print('releasing spagy')
     spagy_sem.release()
 
 
 def buy_chicken_bake():
-    print(' so u wanna buy_chicken_bake ')
     time.sleep(random.randint(1, 5))
+    print('releasing costco')
     costco_sem.release()
 
 
@@ -41,16 +41,16 @@ def main():
             print('waiting for spagy_sem...')
         else:
             print('we got spagy_sem!!!!')
+            semaphore_dict['spagy_sem'] = True
         if not costco_sem.acquire(blocking=False):
             print('waiting for costco_sem...')
         else:
             print('we got costco_sem!!!!')
-        time.sleep(2)
-
-
-# we have 3 semaphores to wait on
-# we need to know when all 3 have finished
-# when all 3 finish we go bye
+            semaphore_dict['costco_sem'] = True
+        if all(value for value in semaphore_dict.values()):
+            print('its been fun.', semaphore_dict.values())
+            exit(0)
+        time.sleep(0.2)
 
 
 t1 = threading.Thread(target=bake_pizza)
