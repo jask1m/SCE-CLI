@@ -9,9 +9,6 @@ args = parser.parse_args()
 
 if args.setup:
     setup.check_os()
-    setup.check_docker()
-    setup.check_mongo()
-
     setup.handle_setup()
 else:
     print('did nothing wrong')

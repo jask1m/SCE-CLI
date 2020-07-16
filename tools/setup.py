@@ -13,7 +13,10 @@ class SceSetupTool:
     """
     operating = ""
     color = Colors()
-    sem = threading.Semaphore()
+    rpc = threading.Semaphore()
+    core = threading.Semaphore()
+    discord = threading.Semaphore()
+    status = threading.Semaphore()
 
     def check_installation(self, name, command, link):
         """
@@ -45,30 +48,6 @@ class SceSetupTool:
         self.operating = platform.system()
         self.color.print_purple(self.operating, True)
 
-    def setup_rpc(self):
-        """
-        This method is used to specifically check for the sce-rpc directory
-        """
-        self.sem.acquire()
-        if os.path.isdir("sce-rpc"):
-            self.color.print_pink("sce-rpc directory found", True)
-            os.chdir("sce-rpc")
-            devnull = open(os.devnull, 'wb')
-            subprocess.check_call("git checkout master", stdout=devnull, stderr=subprocess.STDOUT,
-                                  shell=True)
-            subprocess.check_call("git fetch origin", stdout=devnull, stderr=subprocess.STDOUT,
-                                  shell=True)
-            subprocess.check_call("git reset --hard origin/master",
-                                  stdout=devnull, stderr=subprocess.STDOUT, shell=True)
-            os.chdir("..")
-        else:
-            os.system("git clone https://github.com/SCE-Development/sce-rpc")
-            if self.operating == "Windows":
-                os.system("setup.bat")
-            else:
-                os.system("setup.sh")
-        self.sem.release()
-
     def check_directory(self, name):
         """
         This method checks for a given directory
@@ -97,31 +76,82 @@ class SceSetupTool:
         self.check_installation("mongo", "mongo --version",
                                 "https://www.mongodb.com/try/download/community")
 
+    def setup_rpc(self):
+        """
+        This method is used to specifically check for the sce-rpc directory
+        """
+        if os.path.isdir("sce-rpc"):
+            self.color.print_pink("sce-rpc directory found", True)
+            os.chdir("sce-rpc")
+            devnull = open(os.devnull, 'wb')
+            subprocess.check_call("git checkout master", stdout=devnull, stderr=subprocess.STDOUT,
+                                  shell=True)
+            subprocess.check_call("git fetch origin", stdout=devnull, stderr=subprocess.STDOUT,
+                                  shell=True)
+            subprocess.check_call("git reset --hard origin/master",
+                                  stdout=devnull, stderr=subprocess.STDOUT, shell=True)
+            os.chdir("..")
+        else:
+            os.system("git clone https://github.com/SCE-Development/sce-rpc")
+            if self.operating == "Windows":
+                os.system("setup.bat")
+            else:
+                os.system("setup.sh")
+        self.rpc.release()
+
     def setup_core_v4(self):
         """
         This method checks for the corev4 directory
         """
-        self.sem.acquire()
         self.check_directory("Core-v4")
-        self.sem.release()
+        self.core.release()
 
     def setup_discord_bot(self):
         """
         This method checks for the discord bot directory
         """
-        self.sem.acquire()
         self.check_directory("SCE-discord-bot")
-        self.sem.release()
+        self.discord.release()
+
+    def print_status(self):
+        dict_directories = {
+            'rpc': False,
+            'core': False,
+            'discord': False
+        }
+
+        while 1:
+            if not self.rpc.acquire(blocking=False):
+                print('waiting for rpc...')
+            else:
+                dict_directories['rpc'] = True
+                print('rpc finished')
+            if not self.core.acquire(blocking=False):
+                print('waiting for core...')
+            else:
+                dict_directories['core'] = True
+                print('we got core_sem!!!!')
+            if not self.discord.acquire(blocking=False):
+                print('waiting for costco_sem...')
+            else:
+                dict_directories['discord'] = True
+                print('we got discord!!!!')
+            if all(value for value in dict_directories.values()):
+                print('its been fun.', dict_directories.values())
+                exit(0)
 
     def handle_setup(self):
         t1 = threading.Thread(target=self.setup_rpc)
         t2 = threading.Thread(target=self.setup_core_v4)
         t3 = threading.Thread(target=self.setup_discord_bot)
+        t4 = threading.Thread(target=self.print_status)
 
         t1.start()
         t2.start()
         t3.start()
+        t4.start()
 
         t1.join()
         t2.join()
         t3.join()
+        t4.join()
