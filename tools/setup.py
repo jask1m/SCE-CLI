@@ -13,10 +13,9 @@ class SceSetupTool:
     """
     operating = ""
     color = Colors()
-    rpc = threading.Semaphore()
-    core = threading.Semaphore()
-    discord = threading.Semaphore()
-    status = threading.Semaphore()
+    rpc = threading.Semaphore(value=0)
+    core = threading.Semaphore(value=0)
+    discord = threading.Semaphore(value=0)
 
     def check_installation(self, name, command, link):
         """
@@ -60,8 +59,13 @@ class SceSetupTool:
             self.color.print_pink(name + " directory found", True)
         else:
             self.color.print_red(name + " directory not found, cloning for you", True)
-            os.system("git clone https://github.com/SCE-Development/" + name)
-            os.system("cd " + name)
+            devnull = open(os.devnull, 'wb')
+            subprocess.check_call("git clone https://github.com/SCE-Development/" + name,
+                                  stdout=devnull, stderr=subprocess.STDOUT, shell=True)
+            #subprocess.check_call(name + "/npm install", stdout=devnull, stderr=subprocess.STDOUT,
+                                  #shell=True)
+            if name == "Core-v4":
+                os.system("echo test")
 
     def check_docker(self):
         """
@@ -80,23 +84,24 @@ class SceSetupTool:
         """
         This method is used to specifically check for the sce-rpc directory
         """
+        devnull = open(os.devnull, 'wb')
         if os.path.isdir("sce-rpc"):
             self.color.print_pink("sce-rpc directory found", True)
-            os.chdir("sce-rpc")
-            devnull = open(os.devnull, 'wb')
-            subprocess.check_call("git checkout master", stdout=devnull, stderr=subprocess.STDOUT,
+            subprocess.check_call("git -C sce-rpc checkout master", stdout=devnull, stderr=subprocess.STDOUT,
                                   shell=True)
-            subprocess.check_call("git fetch origin", stdout=devnull, stderr=subprocess.STDOUT,
+            subprocess.check_call("git -C sce-rpc fetch origin", stdout=devnull, stderr=subprocess.STDOUT,
                                   shell=True)
-            subprocess.check_call("git reset --hard origin/master",
+            subprocess.check_call("git -C sce-rpc reset --hard origin/master",
                                   stdout=devnull, stderr=subprocess.STDOUT, shell=True)
-            os.chdir("..")
         else:
-            os.system("git clone https://github.com/SCE-Development/sce-rpc")
+            subprocess.check_call("git clone https://github.com/SCE-Development/sce-rpc",
+                                  stdout=devnull, stderr=subprocess.STDOUT, shell=True)
+            '''
             if self.operating == "Windows":
-                os.system("setup.bat")
+                os.system("sce-rpc/setup.bat")
             else:
-                os.system("setup.sh")
+                os.system("sce-rpc/setup.sh")
+            '''
         self.rpc.release()
 
     def setup_core_v4(self):
@@ -120,24 +125,27 @@ class SceSetupTool:
             'discord': False
         }
 
+        print("waiting for rpc...")
+        print("waiting for core...")
+        print("waiting for discord...\n")
+        print(" =========================== ")
+        print("|                           |")
+
         while 1:
-            if not self.rpc.acquire(blocking=False):
-                print('waiting for rpc...')
-            else:
+            if self.rpc.acquire(blocking=False):
                 dict_directories['rpc'] = True
-                print('rpc finished')
-            if not self.core.acquire(blocking=False):
-                print('waiting for core...')
-            else:
+                print("| rpc finished              |")
+            if self.core.acquire(blocking=False):
                 dict_directories['core'] = True
-                print('we got core_sem!!!!')
-            if not self.discord.acquire(blocking=False):
-                print('waiting for costco_sem...')
-            else:
+                print("| core finished             |")
+            if self.discord.acquire(blocking=False):
                 dict_directories['discord'] = True
-                print('we got discord!!!!')
+                print("| discord finished          |")
             if all(value for value in dict_directories.values()):
-                print('its been fun.', dict_directories.values())
+                print("|                           |")
+                print("| setup complete            |")
+                print("|                           |")
+                print(" =========================== ")
                 exit(0)
 
     def handle_setup(self):
