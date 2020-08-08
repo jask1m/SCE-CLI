@@ -26,10 +26,9 @@ args = parser.parse_args()
 # cd into the dev folder if we are in windows.
 # we dont need to do it for unix/macos because
 # changing the directory is part of the sce alias.
-if platform.system() == "Windows":
-    if "SCE_PATH" in os.environ:
-        place = os.environ["SCE_PATH"]
-        os.chdir(place)
+if "SCE_PATH" in os.environ:
+    place = os.environ["SCE_PATH"]
+    os.chdir(place)
 
 if args.command == 'setup':
     setup = SceSetupTool()
