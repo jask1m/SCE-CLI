@@ -1,6 +1,9 @@
 import argparse
+import platform
+import os
 from tools.setup import SceSetupTool
 from tools.sce_proto_generator import SceProtoGenerator
+from tools.sce_service_handler import SceServiceHandler
 from tools.sce_presubmit_handler import ScePresubmitHandler
 
 parser = argparse.ArgumentParser()
@@ -15,7 +18,17 @@ parser.add_argument(
 parser.add_argument(
     '--language', nargs='+',
     help='The language(s) to generate proto code.')
+parser.add_argument(
+    '--service', '-s', nargs='*',
+    help='SCE Service name')
 args = parser.parse_args()
+
+# cd into the dev folder if we are in windows.
+# we dont need to do it for unix/macos because
+# changing the directory is part of the sce alias.
+if platform.system() == "Windows":
+    place = os.environ["SCE_PATH"]
+    os.chdir(place)
 
 if args.command == 'setup':
     setup = SceSetupTool()
@@ -26,6 +39,9 @@ elif args.command == 'presubmit':
 elif args.command == 'generate':
     generator = SceProtoGenerator(args.proto[0], args.language)
     generator.handle_proto_generation()
+elif args.command == 'run':
+    handler = SceServiceHandler(args.service)
+    handler.run_services()
 elif args.command == 'test':
     setup = SceSetupTool()
     setup.add_sce_alias()
