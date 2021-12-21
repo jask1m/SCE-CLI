@@ -16,8 +16,15 @@ class ScePresubmitHandler:
             'frontend-test': 'npm run frontend-test',
             'build': 'npm run build'
         },
+        'Quasar': {
+            'test': 'npm run test',
+            'lint': 'npm run lint',
+            'flake': 'dev_command' + " -- exclude=node_modules"
+        },
         'SCE-discord-bot': {
             'lint': 'npm run lint'
+        }, 'dev':{
+            'flake8': dev_command + " --exclude=QUASAR, Core-v4, SCE-discord-bot"
         }
     }
 

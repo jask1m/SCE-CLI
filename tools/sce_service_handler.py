@@ -12,6 +12,7 @@ class SceServiceHandler:
             'frontend': 'cd Core-v4 && npm start',
             'server': 'cd Core-v4 && npm run server',
             'discord': True,
+            'quasar': True,
             'core-v4': True,
             'mongo': True,
         }
@@ -31,6 +32,8 @@ class SceServiceHandler:
                     self.run_core_v4()
                 elif service == 'discord':
                     self.run_discord_bot()
+                elif service == 'quasar':
+                    self.run_quasar()
                 elif service == 'mongo':
                     self.run_mongodb()
                 else:
@@ -55,6 +58,9 @@ class SceServiceHandler:
 
     def run_discord_bot(self):
         subprocess.Popen('cd SCE-discord-bot && npm start', shell=True)
+    
+    def run_quasar(self):
+        pass
 
     def all_systems_go(self):
         self.run_core_v4()
