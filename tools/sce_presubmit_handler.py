@@ -16,18 +16,12 @@ class ScePresubmitHandler:
             'frontend-test': 'npm run frontend-test',
             'build': 'npm run build'
         },
-        'SCE-RPC': {
-            'test': 'npm run test',
-            'lint': 'npm run lint',
-            'flake8': dev_command +
-            " --exclude=node_modules,*pb2*,modules"
-        },
         'SCE-discord-bot': {
             'lint': 'npm run lint'
         },
         'dev': {
             'flake8': dev_command +
-            " --exclude=SCE-RPC,Core-v4,SCE-discord-bot"
+            " --exclude=Core-v4,SCE-discord-bot"
         }
     }
 
