@@ -1,10 +1,16 @@
 import os
+import sys
+import signal
 import subprocess
 import platform
+from tools.colors import Colors
+from tools.utils import check_docker_status
 
 
 class SceServiceHandler:
-    def __init__(self, services):
+    colors = Colors()
+
+    def __init__(self, services, dbpath=None):
         self.user_os = platform.system()
         self.py_command = "py" if self.user_os == "Windows" else "python3"
         self.services = services
@@ -15,6 +21,7 @@ class SceServiceHandler:
             'core-v4': True,
             'mongo': True,
         }
+        self.set_mongo_volume_path(dbpath)
 
     def run_services(self):
         if not self.services:
@@ -34,8 +41,8 @@ class SceServiceHandler:
                 elif service == 'mongo':
                     self.run_mongodb()
                 else:
-                    subprocess.check_call(self.service_dict[service],
-                                          shell=True)
+                    subprocess.Popen(self.service_dict[service],
+                                        shell=True)
 
     def print_usage(self):
         print('Available Services (case sensitive):')
@@ -43,10 +50,25 @@ class SceServiceHandler:
             print('\t', key)
 
     def run_mongodb(self):
-        if os.path.exists('~/data/db'):
-            subprocess.Popen('mongod --dbpath ~/data/db')
-        else:
-            subprocess.Popen('mongod')
+        docker_status = check_docker_status()
+        if not docker_status['is_installed']:
+            self.colors.print_red(
+                'To run MongoDB, please install Docker Desktop! '\
+                'If you already have, you may need to reload your shell.'
+            )
+            return
+
+        if not docker_status['is_running']:
+            self.colors.print_red('To run MongoDB, ensure your Docker daemon is running.')
+            return
+
+        docker_command = f'''docker run -it -p 27017:27017 -d -v {self.mongo_volume_path}:/data/db mongo'''
+
+        subprocess.Popen(
+            docker_command,
+            stdout=subprocess.PIPE,
+            shell=True
+        )
 
     def run_core_v4(self):
         self.run_mongodb()
@@ -54,8 +76,22 @@ class SceServiceHandler:
         subprocess.Popen(self.service_dict['server'], shell=True)
 
     def run_discord_bot(self):
-        subprocess.Popen('cd SCE-discord-bot && npm start', shell=True)
+        subprocess.Popen('cd SCE-discord-bot && npm start', shell=True).communicate()
 
     def all_systems_go(self):
         self.run_core_v4()
         self.run_discord_bot()
+
+    def set_mongo_volume_path(self, path=None):
+        sce_path = os.environ.get('SCE_PATH')
+        if not sce_path:
+            self.colors.print_red(
+                'Error: Please run the setup command first. ' \
+                    'If you already have, you may need to reload your shell.'
+            )
+            sys.exit(1)
+
+        if path is None:
+            self.mongo_volume_path = os.path.join(sce_path, 'mongo', 'data', 'db')
+        else:
+            self.mongo_volume_path = path

@@ -2,6 +2,7 @@ import subprocess
 import os
 import platform
 from tools.colors import Colors
+from tools.utils import check_docker_status
 
 
 class SceSetupTool:
@@ -13,6 +14,7 @@ class SceSetupTool:
     operating = ""
     color = Colors()
     devnull = open(os.devnull, 'wb')
+    docker_is_running = True
 
     def __init__(self):
         self.operating = platform.system()
@@ -56,19 +58,28 @@ class SceSetupTool:
                                   + "https://github.com/SCE-Development/"
                                   + name, stderr=subprocess.STDOUT, shell=True)
 
-    def check_mongo(self):
+    def check_docker(self):
         """
-        This method checks for mongo installation
+        This method checks for docker installation and
+        if it is running
         """
-        self.check_installation("mongo", "mongo --version",
-                                    "https://www.mongodb.com/"
-                                    + "try/download/community")
+        docker_status = check_docker_status()
+        if not docker_status['is_installed']:
+            self.color.print_red('Docker not found')
+            print("Follow the instruction to install: ")
+            self.color.print_purple('https://docs.docker.com/get-docker/')
+            input("Press enter to exit setup: ")
+            return
+        if not docker_status['is_running']:
+            self.docker_is_running = False
+        self.color.print_yellow('Docker found')
+
     
     def check_node(self): 
         """
             This method checks for node installation
         """
-        self.check_installation("npm", "npm --version",
+        self.check_installation("npm", "npm -v",
                                     "https://nodejs.org/en/download/")
 
     def write_alias_to_file(self, file_name):
@@ -102,9 +113,9 @@ class SceSetupTool:
                 self.write_alias_to_file(BASH_PROFILE_PATH)
 
     def add_alias_windows(self):
-        subprocess.check_call("pip install cx_Freeze",
+        subprocess.check_call("py -m pip install cx_Freeze",
                               stderr=subprocess.STDOUT, shell=True)
-        subprocess.check_call("pip install idna",
+        subprocess.check_call("py -m pip install idna",
                               stderr=subprocess.STDOUT, shell=True)
         subprocess.check_call("py setup.py build",
                               stderr=subprocess.STDOUT, shell=True)
@@ -175,7 +186,8 @@ class SceSetupTool:
 
     def setup(self):
         self.color.print_purple(f'Detected OS: {self.operating}')
-        self.check_mongo()
+
+        self.check_docker()
         self.check_node()
 
         self.setup_core_v4()
@@ -188,3 +200,10 @@ class SceSetupTool:
 The npm install step in the three projects may have created unwanted files.
 Open the projects and delete any unfamiliar untracked files.
                                     """)
+
+        if not self.docker_is_running:
+            self.color.print_pink(
+                '''\
+Please start Docker Desktop before running backend services.
+                '''
+            )

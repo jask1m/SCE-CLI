@@ -20,6 +20,10 @@ parser.add_argument(
 parser.add_argument(
     '--service', '-s', nargs='*',
     help='SCE Service name')
+parser.add_argument(
+    '--dbpath',
+    help='Specify a path for the volume used by MongoDB.'
+)
 args = parser.parse_args()
 
 # cd into the dev folder if we are in windows.
@@ -36,7 +40,7 @@ else:
         test_project = ScePresubmitHandler(args.project)
         test_project.handle_testing()
     elif args.command == 'run':
-        handler = SceServiceHandler(args.service)
+        handler = SceServiceHandler(args.service, args.dbpath)
         handler.run_services()
     elif args.command == 'test':
         setup = SceSetupTool()
