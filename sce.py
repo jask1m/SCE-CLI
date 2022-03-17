@@ -4,6 +4,7 @@ import os
 from tools.setup import SceSetupTool
 from tools.sce_service_handler import SceServiceHandler
 from tools.sce_presubmit_handler import ScePresubmitHandler
+from tools.sce_clone_handler import SceCloneHandler
 
 parser = argparse.ArgumentParser()
 sub_parser = parser.add_subparsers(required=True, dest='command')
@@ -31,6 +32,7 @@ args = parser.parse_args()
 # cd into the dev folder if we are in windows.
 # we dont need to do it for unix/macos because
 # changing the directory is part of the sce alias.
+
 if args.command == 'setup':
     setup = SceSetupTool()
     setup.setup()
@@ -44,4 +46,9 @@ else:
     elif args.command == 'run':
         handler = SceServiceHandler(args.service, args.dbpath)
         handler.run_services()
-
+    elif args.command == 'test':
+        setup = SceSetupTool()
+        setup.add_sce_alias()
+    elif args.command == 'clone':
+        handler = SceCloneHandler(args.project)
+        handler.handle_cloning()
