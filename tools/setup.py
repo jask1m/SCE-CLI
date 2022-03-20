@@ -2,8 +2,7 @@ import subprocess
 import os
 import platform
 from tools.colors import Colors
-from tools.utils import check_docker_status
-
+from tools.utils import check_docker_status, prompt_user, prompt_user_yn
 
 class SceSetupTool:
     """
@@ -16,8 +15,9 @@ class SceSetupTool:
     devnull = open(os.devnull, 'wb')
     docker_is_running = True
 
-    def __init__(self):
+    def __init__(self, sce_path):
         self.operating = platform.system()
+        self.sce_path = sce_path
 
     def check_installation(self, name, command, link):
         """
@@ -41,6 +41,18 @@ class SceSetupTool:
             self.color.print_purple(link)
             input("press enter to continue: ")
 
+    def link(self, name):
+        custom_dir = prompt_user_yn('would you like to link an existing' 
+                f' clone of {name} to the sce cli?(y or n): ')
+        if custom_dir == 'y':
+            user_project_dir = prompt_user(f'enter a valid path of {name}: ',
+                    lambda path: os.path.isdir(path))
+            user_project_dir = os.path.abspath(user_project_dir)
+            os.symlink(user_project_dir, os.path.join(self.sce_path, name),
+                    target_is_directory=True)
+            return True
+        return False
+    
     def check_directory(self, name):
         """
         This method checks for a given directory
@@ -52,11 +64,11 @@ class SceSetupTool:
         if os.path.isdir(name):
             self.color.print_pink(name + " directory found")
         else:
-            self.color.print_red(
-                name + " directory not found, cloning for you")
-            subprocess.check_call("git clone "
-                                  + "https://github.com/SCE-Development/"
-                                  + name, stderr=subprocess.STDOUT, shell=True)
+            self.color.print_red(name + ' directory not found')
+            if not self.link(name):
+                subprocess.check_call("git clone "
+                                      + "https://github.com/SCE-Development/"
+                                      + name, stderr=subprocess.STDOUT, shell=True)
 
     def check_docker(self):
         """
@@ -83,7 +95,6 @@ class SceSetupTool:
                                     "https://nodejs.org/en/download/")
 
     def write_alias_to_file(self, file_name):
-        sce_path = os.getcwd()
         try:
             subprocess.check_call(
                 f'grep -rl \"alias sce=\" {file_name}',
@@ -91,9 +102,9 @@ class SceSetupTool:
         except subprocess.CalledProcessError:
             with open(file_name, 'a') as file:
                 file.write('\n')
-                file.write(f"export SCE_PATH={sce_path}")
+                file.write(f"export SCE_PATH={self.sce_path}")
                 file.write('\n')
-                file.write(f'alias sce="python3 {sce_path}/sce.py"')
+                file.write(f'alias sce="python3 {self.sce_path}/sce.py"')
                 file.write('\n')
 
     def unix_rc_path(self):
