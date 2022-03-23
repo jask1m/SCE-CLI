@@ -67,5 +67,5 @@ else:
     elif args.command == 'link':
         os.symlink(os.path.abspath(args.path), os.path.join(sce_dir, args.project))
     elif args.command == 'clone':
-        handler = SceCloneHandler(args.project)
+        handler = SceCloneHandler(args.projects)
         handler.handle_cloning()
