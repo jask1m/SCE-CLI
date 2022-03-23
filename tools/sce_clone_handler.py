@@ -26,11 +26,12 @@ class SceCloneHandler:
 		""")
 
 	def handle_cloning(self):
-		if not self.project or len(self.project) != 1:
+		if not self.project or len(self.project) < 1:
 			self.print_usage()
 			return
 		elif self.project[0] not in self.projects:
 			self.invalidName()
 			return
-		process = subprocess.Popen(['git', 'clone', self.projects[self.project[0].lower()]], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+		for project in self.project:
+			process = subprocess.Popen(['git', 'clone', self.projects[project.lower()]], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 		stdout, stderr = process.communicate()
