@@ -64,20 +64,8 @@ else:
         os.chdir(sce_dir)
         handler = SceServiceHandler(args.service, args.dbpath)
         handler.run_services()
-<<<<<<< HEAD
-<<<<<<< HEAD
     elif args.command == 'link':
         os.symlink(os.path.abspath(args.path), os.path.join(sce_dir, args.project))
-=======
-    elif args.command == 'test':
-        setup = SceSetupTool()
-        setup.add_sce_alias()
->>>>>>> 18214ac... Added cloning function
-=======
-    elif args.command == 'test':
-        setup = SceSetupTool()
-        setup.add_sce_alias()
->>>>>>> 3fef28cac10a38d2a77011d106215368de27c5a0
     elif args.command == 'clone':
         handler = SceCloneHandler(args.project)
         handler.handle_cloning()
