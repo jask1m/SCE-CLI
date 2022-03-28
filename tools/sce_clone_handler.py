@@ -8,14 +8,14 @@ class SceCloneHandler:
 		"quasar": "https://github.com/SCE-Development/Quasar.git"
 	}
 
-	def __init__(self, projects) -> None:
+	def __init__(self, projects):
 		if projects == None:
 			self.projects = ["core-v4"]
 		self.projects = projects
 
 	def print_usage(self):
 		print(f"""
-		Please enter only one valid project.
+		Please enter at least one valid project.
 		Valid projects are: {list(self.project_names.keys())}.
 		""")
 
@@ -26,12 +26,12 @@ class SceCloneHandler:
 		""")
 
 	def handle_cloning(self):
-		if not self.projects or len(self.projects) < 1:
+		if not self.projects:
 			self.print_usage()
 			return
 		for project in self.projects:
-			if project not in self.project_names:
+			if project.lower() not in list(self.project_names.keys()):
 				self.invalidName(project)
 			else:
-				process = subprocess.Popen(['git', 'clone', self.project_names[project.lower()]], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-				stdout, stderr = process.communicate()
+				process = subprocess.Popen(['git', 'clone', self.project_names[project.lower()]])
+				process.communicate()

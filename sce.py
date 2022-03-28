@@ -44,6 +44,12 @@ linker_parser.add_argument(
     type=directory, default=os.getcwd()
 )
 
+clone_parser = sub_parser.add_parser('clone', help='Clone an sce project')
+clone_parser.add_argument(
+    '--project', '-p', nargs='+',
+    help='Project(s) to clone.'
+)
+
 args = parser.parse_args()
 
 # cd into the dev folder if we are in windows.
@@ -67,5 +73,5 @@ else:
     elif args.command == 'link':
         os.symlink(os.path.abspath(args.path), os.path.join(sce_dir, args.project))
     elif args.command == 'clone':
-        handler = SceCloneHandler(args.projects)
+        handler = SceCloneHandler(args.project)
         handler.handle_cloning()
