@@ -9,8 +9,6 @@ class SceCloneHandler:
 	}
 
 	def __init__(self, projects):
-		if projects == None:
-			self.projects = ["core-v4"]
 		self.projects = projects
 
 	def print_usage(self):
