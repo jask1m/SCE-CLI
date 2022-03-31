@@ -1,20 +1,16 @@
-from cx_Freeze import setup, Executable
+import setuptools
 
-base = None
-
-executables = [Executable("sce.py", base=base)]
-
-packages = ["idna"]
-options = {
-    'build_exe': {
-        'packages': packages,
+setuptools.setup(
+    name='SCE-CLI-SocietyOfComputerEngineers-SJSU',
+    version='1.0.0',
+    author='bred',
+    description='sce project manager',
+    url='https://github.com/SCE-Development/SCE-CLI',
+    package_dir={'':'src'},
+    python_requires='>=3.9',
+    entry_points={
+        'console_scripts': [
+            'sce = sce:cli'
+        ],
     },
-}
-
-setup(
-    name="sce",
-    options=options,
-    version="1.0",
-    description='lmao',
-    executables=executables
 )
