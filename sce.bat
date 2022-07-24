@@ -120,11 +120,11 @@ REM set the varible %name% to the resolved repo.
     goto :exit_success
 
 :print_command_usage
-    echo usage: sce %1% {repo name} ...
+    echo usage: sce %1% {repo name}
     goto :print_repo_nicknames
 
 :print_usage
-    echo usage: sce {clone,run,link,setup} {repo name} ...
+    echo usage: sce {clone,run,link,setup} {repo name}
     echo.
     echo clone: clone the given repo from github.
     echo run: run the repo using docker
