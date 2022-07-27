@@ -3,7 +3,7 @@
 setlocal ENABLEDELAYEDEXPANSION
 
 REM aliases for the sce dev projects
-set COREV4_PTIONS="core-v4" "corev4" "cv4" "c4" "c"
+set COREV4_OPTIONS="core-v4" "corev4" "cv4" "c4" "c"
 set QUASAR_OPTIONS="quasar" "q" "idsmile"
 set DISCORD_BOT_OPTIONS="sce-discord-bot" "discord-bot" "discord" "bot" "d"
 set GITHUB_BASE_URL=https://github.com/SCE-Development/
@@ -116,6 +116,10 @@ REM set the varible %name% to the resolved repo.
         goto :print_repo_not_found
     )
     cd %REPO_LOCATION%
+    IF %name%==%SCE_DISCORD_BOT_REPO_NAME% (
+        docker-compose -f docker-compose.yml up
+        goto :exit_success
+    )
     docker-compose -f docker-compose.dev.yml up
     goto :exit_success
 
