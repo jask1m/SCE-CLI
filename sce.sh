@@ -16,6 +16,14 @@ function print_usage {
     echo "link: tell the sce tool where to find the repo on your computer"
     echo "setup: copy config.example.json in a repo to config.json"
     print_repo_nicknames
+    exit 1
+}
+
+function print_repo_not_found {
+    echo it looks like you havent linked $1 to the sce tool.
+    echo
+    echo either link the repo with sce link $1 or clone it first with sce link $1.
+    exit 1
 }
 
 SCE_COMMAND_DIRECTORY=$(echo $0 | rev |  cut -c7- | rev)
@@ -83,4 +91,45 @@ then
     name=$SCE_DISCORD_BOT_REPO_NAME
 fi
 
+if [ -z "$name" ]
+then
+    print_usage
+fi
+
+if [ $1 == "clone" ]
+then
+    git clone "$GITHUB_BASE_URL$name"
+    exit 0
+elif [ $1 == "link" ]
+then
+    sce_run_location=$(pwd)
+    # remove sim link if it exists, ignore any stderr/stdout
+    rm "$SCE_COMMAND_DIRECTORY$name" &> /dev/null
+    ln -s "$sce_run_location" "$SCE_COMMAND_DIRECTORY$name"
+elif [ $1 == "run" ]
+then
+    REPO_LOCATION="$SCE_COMMAND_DIRECTORY$name"
+    if [ ! -d "$REPO_LOCATION" ] 
+    then
+        print_repo_not_found $name
+    fi
+    if [ $name == $SCE_DISCORD_BOT_REPO_NAME ]
+    then
+        docker-compose up --build
+        exit 0
+    fi
+    docker-compose -f docker-compose.dev.yml up --build
+    exit 0
+fi
+
+# else if link
+# else if run
+# else
+#  print usage
+
+
+# run
+# link
+
 echo $name
+
