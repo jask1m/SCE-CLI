@@ -3,7 +3,10 @@ Command line tool to run any of the SCE projects. Works on Windows, Mac and
  Linux. Available with the `sce` command.
 
 ## Setup
-Before starting, clone this repository to your computer with
+Before starting, be sure you have Docker installed! This tool
+ runs SCE's projects with Docker.
+
+Clone this repository to your computer with
 ```
 git clone https://github.com/SCE-Development/SCE-CLI.git
 ```
@@ -30,3 +33,66 @@ C:\Users\<username>\path\to\SCE-CLI\
 3. After doing so, typing `sce` in the Command Prompt
  should work, and the help page should show like below:
 ![eb2015026b076e7b31a8caa2ff8f2e55](https://user-images.githubusercontent.com/10038262/180635207-2ea70c08-003f-4f59-95f8-35817bc6a51b.png)
+
+### Mac/Linux
+1. Get the full path to the `SCE-CLI` directory by typing `pwd` from within it.
+
+On Linux, the path should look like:
+```
+/home/<user>/path/to/SCE-CLI
+```
+
+On Mac, the path should look like:
+```
+/Users/<user>/path/to/SCE-CLI
+```
+
+2. take the value from `pwd` and add `/sce.sh` to the end of it.
+
+3. Add an alias to your terminals config file like:
+```sh
+alias sce="<pwd output>/sce.sh
+```
+On Mac, this will be in `~/.zshrc`, on Linux this will be in `~/.bashrc`.
+
+
+## Usage
+To use the script, you use the command `sce` with a command and repo name
+The commands that you can run are: clone, link, run.
+Alternatively, just run the command `sce` to see the usages in the terminal.
+### Repo Names
+The name of the repositories are (the nicknames are alternate names you can use in the command):
+core-v4 (nicknames: core-v4, corev4, cv4, c4, c) 
+quasar (nicknames: quasar, q, idsmile)
+sce-discord-bot (nicknames: sce-discord-bot, discord-bot, discord, bot, d)
+
+### Clone
+To clone an SCE project from GitHub, simply enter
+```
+sce clone <project> [--ssh]
+```
+The reposity will be cloned from wherever the command was ran.
+Project names can be `quasar`, `core-v4`, `discord` etc. See the above repo
+ names section for all options.
+
+The `--ssh` parameter can be optionally added after the project name.
+ Supplying this will clone the repo with the GitHub SSH URL over the
+ HTTPS one.
+
+### Link
+To link a sce repo to your directory where you are running the command, simply enter
+```
+sce link <project>
+```
+Project names can be `quasar`, `core-v4`, `discord` etc. See the above repo
+ names section for all options.
+
+### Run
+To run an SCE project, simply enter
+
+```
+sce run <project>
+```
+where project can be `quasar`, `core-v4`, `discord` etc. See the above repo
+ names section for all options.
+

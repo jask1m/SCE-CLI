@@ -27,7 +27,12 @@ function print_repo_not_found {
 }
 
 SCE_COMMAND_DIRECTORY=$(echo $0 | rev |  cut -c7- | rev)
-GITHUB_BASE_URL="https://github.com/SCE-Development/"
+GITHUB_BASE_HTTP_URL="https://github.com/SCE-Development/"
+# sce clone <repo> --ssh
+# sce clone <repo>
+# git@github.com:SCE-Development/Core-v4.git
+GITHUB_BASE_SSH_URL="git@github.com:SCE-Development/"
+
 COREV4_REPO_NAME="Core-v4"
 QUASAR_REPO_NAME="Quasar"
 SCE_DISCORD_BOT_REPO_NAME="SCE-discord-bot"
@@ -98,7 +103,16 @@ fi
 
 if [ $1 == "clone" ]
 then
-    git clone "$GITHUB_BASE_URL$name"
+    # clone with the SSH URL if the user wanted to
+    # if the third argument is absent or anything else
+    # just default to the HTTPS url
+    if [ $3 == "--ssh" ]
+    then
+        git clone "$GITHUB_BASE_SSH_URL$name.git"
+    else
+    then
+        git clone "$GITHUB_BASE_HTTP_URL$name.git"
+    fi
     exit 0
 elif [ $1 == "link" ]
 then
