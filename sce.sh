@@ -106,11 +106,10 @@ then
     # clone with the SSH URL if the user wanted to
     # if the third argument is absent or anything else
     # just default to the HTTPS url
-    if [ $3 == "--ssh" ]
+    if [[ ! -z "$3" ]] && [[ $3 == "--ssh" ]]
     then
         git clone "$GITHUB_BASE_SSH_URL$name.git"
     else
-    then
         git clone "$GITHUB_BASE_HTTP_URL$name.git"
     fi
     exit 0
@@ -127,6 +126,7 @@ then
     then
         print_repo_not_found $name
     fi
+    cd $REPO_LOCATION
     if [ $name == $SCE_DISCORD_BOT_REPO_NAME ]
     then
         docker-compose up --build
