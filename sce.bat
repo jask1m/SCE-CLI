@@ -11,9 +11,10 @@ set COREV4_REPO_NAME=Core-v4
 set QUASAR_REPO_NAME=Quasar
 set SCE_DISCORD_BOT_REPO_NAME=SCE-discord-bot
 
-REM parse two very important things. 1. find where the script was ran from
-REM in the command line, 2. where the script is located on the user's disk
-FOR /F "tokens=*" %%g IN ('where ecs.bat') do (SET SCE_SCRIPT_LOCATION=%%g)
+REM parse the location where:
+REM 1. the `sce` command was ran from in the command line
+REM 2. the actual sce.bat script is located on the user's disk
+FOR /F "tokens=*" %%g IN ('where sce.bat') do (SET SCE_SCRIPT_LOCATION=%%g)
 FOR /F "tokens=*" %%g IN ('cd') do (SET WHERE_COMMAND_WAS_RAN_FROM=%%g)
 
 REM this yields the location of where the sce command line
