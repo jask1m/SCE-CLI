@@ -135,15 +135,3 @@ then
     docker-compose -f docker-compose.dev.yml up --build
     exit 0
 fi
-
-# else if link
-# else if run
-# else
-#  print usage
-
-
-# run
-# link
-
-echo $name
-
