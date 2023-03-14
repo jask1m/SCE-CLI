@@ -38,7 +38,6 @@ QUASAR_REPO_NAME="Quasar"
 SCE_DISCORD_BOT_REPO_NAME="SCE-discord-bot"
 
 CLARK_NAMES=("clark" "dog" "clrk" "ck" "c") 
-echo "Clark:clark, dog, clrk, ck, c"
 QUASAR_NAMES=("quasar" "q" "idsmile")
 SCE_DISCORD_BOT_NAMES=("sce-discord-bot" "discord-bot" "discord" "bot" "d")
 
