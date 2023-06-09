@@ -118,10 +118,10 @@ REM set the varible %name% to the resolved repo.
     )
     cd %REPO_LOCATION%
     IF %name%==%SCE_DISCORD_BOT_REPO_NAME% (
-        docker-compose -f docker-compose.yml up
+        docker-compose -f docker-compose.yml up --build
         goto :exit_success
     )
-    docker-compose -f docker-compose.dev.yml up
+    docker-compose -f docker-compose.dev.yml up --build
     goto :exit_success
 
 :print_command_usage
