@@ -4,6 +4,7 @@ function print_repo_nicknames {
     echo
     echo "each repo has nicknames:"
     echo "Clark:clark, dog, clrk, ck, c"
+    echo "MongoDB (must have clark installed and linked):mongo, db, mongodb"
     echo "Quasar:quasar, q, idsmile"
     echo "SCE-discod-bot:sce-discord-bot, discord-bot, discord, bot, d"
 }
@@ -37,7 +38,8 @@ CLARK_REPO_NAME="Clark"
 QUASAR_REPO_NAME="Quasar"
 SCE_DISCORD_BOT_REPO_NAME="SCE-discord-bot"
 
-CLARK_NAMES=("clark" "dog" "clrk" "ck" "c") 
+CLARK_NAMES=("clark" "dog" "clrk" "ck" "c")
+MONGODB_NAMES=("mongo" "db" "mongodb")
 QUASAR_NAMES=("quasar" "q" "idsmile")
 SCE_DISCORD_BOT_NAMES=("sce-discord-bot" "discord-bot" "discord" "bot" "d")
 
@@ -57,6 +59,11 @@ function is_quasar_alias {
 
 function is_clark_alias {
     result=$(contains_element "$1" "${CLARK_NAMES[@]}")
+    return $result
+}
+
+function is_mongodb_alias {
+    result=$(contains_element "$1" "${MONGODB_NAMES[@]}")
     return $result
 }
 
@@ -85,6 +92,13 @@ then
 fi
 
 is_clark_alias "$2"
+if [ $? -eq 0 ]
+then
+    name=$CLARK_REPO_NAME
+fi
+
+is_mongodb_alias "$2"
+start_only_mongodb_container=$?
 if [ $? -eq 0 ]
 then
     name=$CLARK_REPO_NAME
@@ -121,12 +135,18 @@ then
     ln -s "$sce_run_location" "$SCE_COMMAND_DIRECTORY$name"
 elif [ $1 == "run" ]
 then
+    echo $name
     REPO_LOCATION="$SCE_COMMAND_DIRECTORY$name"
     if [ ! -d "$REPO_LOCATION" ] 
     then
         print_repo_not_found $name
     fi
     cd $REPO_LOCATION
+    if [ $start_only_mongodb_container -eq 0 ]
+    then
+        docker-compose -f docker-compose.dev.yml up mongodb -d
+        exit 0
+    fi
     if [ $name == $SCE_DISCORD_BOT_REPO_NAME ]
     then
         docker-compose up --build
