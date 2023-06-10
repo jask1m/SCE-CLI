@@ -43,7 +43,7 @@ MONGODB_NAMES=("mongo" "db" "mongodb")
 QUASAR_NAMES=("quasar" "q" "idsmile")
 SCE_DISCORD_BOT_NAMES=("sce-discord-bot" "discord-bot" "discord" "bot" "d")
 
-VALID_COMMANDS=("link" "clone" "run" "setup")
+VALID_COMMANDS=("link" "clone" "run" "setup" "completion")
 
 function contains_element {
   local e match="$1"
@@ -82,6 +82,14 @@ if [ $? -eq 1 ]
 then  
     print_usage
     exit 1
+fi
+
+if [ $1 == "completion" ]
+then
+    echo "# for the sce dev tool"
+    echo "alias sce=\"$(pwd)/sce.sh\""
+    echo ""
+    exit 0
 fi
 
 name=""
@@ -135,7 +143,6 @@ then
     ln -s "$sce_run_location" "$SCE_COMMAND_DIRECTORY$name"
 elif [ $1 == "run" ]
 then
-    echo $name
     REPO_LOCATION="$SCE_COMMAND_DIRECTORY$name"
     if [ ! -d "$REPO_LOCATION" ] 
     then

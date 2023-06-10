@@ -35,26 +35,16 @@ C:\Users\<username>\path\to\SCE-CLI\
 ![eb2015026b076e7b31a8caa2ff8f2e55](https://user-images.githubusercontent.com/10038262/180635207-2ea70c08-003f-4f59-95f8-35817bc6a51b.png)
 
 ### Mac/Linux
-1. Get the full path to the `SCE-CLI` directory by typing `pwd` from within it.
-
-On Linux, the path should look like:
-```
-/home/<user>/path/to/SCE-CLI
-```
-
-On Mac, the path should look like:
-```
-/Users/<user>/path/to/SCE-CLI
-```
-
-2. take the value from `pwd` and add `/sce.sh` to the end of it.
-
-3. Add an alias to your terminals config file like:
+1. cd into the `SCE-CLI`
+2. Add an alias to your terminals config file like:
 ```sh
-alias sce="<pwd output>/sce.sh
-```
-On Mac, this will be in `~/.zshrc`, on Linux this will be in `~/.bashrc`.
+# for linux
+./sce.sh completion >> ~/.bashrc
 
+# for mac
+./sce.sh completion >> ~/.zshrc
+```
+3. After doing the above, making a new terminal and typing `sce` should work.
 
 ## Usage
 To use the script, you use the command `sce` with a command and repo name
