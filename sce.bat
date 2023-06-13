@@ -4,6 +4,7 @@ setlocal ENABLEDELAYEDEXPANSION
 
 REM aliases for the sce dev projects
 set CLARK_OPTIONS="clark" "clrk" "ck" "c"
+set MONGODB_OPTIONS="mongo" "db" "mongodb"
 set QUASAR_OPTIONS="quasar" "q" "idsmile"
 set DISCORD_BOT_OPTIONS="sce-discord-bot" "discord-bot" "discord" "bot" "d"
 set GITHUB_BASE_URL=https://github.com/SCE-Development/
@@ -50,10 +51,18 @@ REM set the varible %name% to the resolved repo.
     REM comparing variable with a bunch of values:
     REM https://stackoverflow.com/a/38481845
     SET name=""
+    set is_mongodb_alias=""
     SET repo_to_link="%2%"
     (for %%a in (%CLARK_OPTIONS%) do (
         if %repo_to_link% == %%a (
             SET name=%CLARK_REPO_NAME%
+            goto :%1%
+        )
+    ))
+    (for %%a in (%MONGODB_OPTIONS%) do (
+        if %repo_to_link% == %%a (
+            SET name=%CLARK_REPO_NAME%
+            SET is_mongodb_alias="true"
             goto :%1%
         )
     ))
@@ -121,6 +130,10 @@ REM set the varible %name% to the resolved repo.
         docker-compose -f docker-compose.yml up --build
         goto :exit_success
     )
+    IF %is_mongodb_alias%=="true" (
+        docker-compose -f docker-compose.dev.yml up mongodb -d
+        goto :exit_success
+    )
     docker-compose -f docker-compose.dev.yml up --build
     goto :exit_success
 
@@ -141,6 +154,7 @@ REM set the varible %name% to the resolved repo.
     echo.
     echo each repo has nicknames:
     echo Clark:clark, clrk, ck, c
+    echo MongoDB:mongo, db, mongodb
     echo Quasar:quasar, q, idsmile
     echo SCE-discod-bot:sce-discord-bot, discord-bot, discord, bot, d
     REM assumes this was printed when the user incorrectly used the command
