@@ -107,7 +107,7 @@ fi
 
 is_mongodb_alias "$2"
 start_only_mongodb_container=$?
-if [ $? -eq 0 ]
+if [ $start_only_mongodb_container -eq 0 ]
 then
     name=$CLARK_REPO_NAME
 fi
