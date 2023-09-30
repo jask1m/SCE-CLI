@@ -4,11 +4,13 @@ setlocal ENABLEDELAYEDEXPANSION
 
 REM aliases for the sce dev projects
 set CLARK_OPTIONS="clark" "clrk" "ck" "c"
+set CLEEZY_OPTIONS="cleezy" "url" "z"
 set MONGODB_OPTIONS="mongo" "db" "mongodb"
 set QUASAR_OPTIONS="quasar" "q" "idsmile"
 set DISCORD_BOT_OPTIONS="sce-discord-bot" "discord-bot" "discord" "bot" "d"
 set GITHUB_BASE_URL=https://github.com/SCE-Development/
 set CLARK_REPO_NAME=Clark
+set CLEEZY_REPO_NAME=cleezy
 set QUASAR_REPO_NAME=Quasar
 set SCE_DISCORD_BOT_REPO_NAME=SCE-discord-bot
 
@@ -56,6 +58,12 @@ REM set the varible %name% to the resolved repo.
     (for %%a in (%CLARK_OPTIONS%) do (
         if %repo_to_link% == %%a (
             SET name=%CLARK_REPO_NAME%
+            goto :%1%
+        )
+    ))
+    (for %%a in (%CLEEZY_OPTIONS%) do (
+        if %repo_to_link% == %%a (
+            SET name=%CLEEZY_REPO_NAME%
             goto :%1%
         )
     ))

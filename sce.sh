@@ -35,10 +35,12 @@ GITHUB_BASE_HTTP_URL="https://github.com/SCE-Development/"
 GITHUB_BASE_SSH_URL="git@github.com:SCE-Development/"
 
 CLARK_REPO_NAME="Clark"
+CLEEZY_REPO_NAME="cleezy"
 QUASAR_REPO_NAME="Quasar"
 SCE_DISCORD_BOT_REPO_NAME="SCE-discord-bot"
 
 CLARK_NAMES=("clark" "dog" "clrk" "ck" "c")
+CLEEZY_NAMES=("cleezy" "url" "z")
 MONGODB_NAMES=("mongo" "db" "mongodb")
 QUASAR_NAMES=("quasar" "q" "idsmile")
 SCE_DISCORD_BOT_NAMES=("sce-discord-bot" "discord-bot" "discord" "bot" "d")
@@ -59,6 +61,11 @@ function is_quasar_alias {
 
 function is_clark_alias {
     result=$(contains_element "$1" "${CLARK_NAMES[@]}")
+    return $result
+}
+
+function is_cleezy_alias {
+    result=$(contains_element "$1" "${CLEEZY_NAMES[@]}")
     return $result
 }
 
@@ -103,6 +110,12 @@ is_clark_alias "$2"
 if [ $? -eq 0 ]
 then
     name=$CLARK_REPO_NAME
+fi
+
+is_cleezy_alias "$2"
+if [ $? -eq 0 ]
+then
+    name=$CLEEZY_REPO_NAME
 fi
 
 is_mongodb_alias "$2"
