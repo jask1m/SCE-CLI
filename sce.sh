@@ -6,7 +6,8 @@ function print_repo_nicknames {
     echo "Clark:clark, dog, clrk, ck, c"
     echo "MongoDB (must have clark installed and linked):mongo, db, mongodb"
     echo "Quasar:quasar, q, idsmile"
-    echo "SCE-discod-bot:sce-discord-bot, discord-bot, discord, bot, d"
+    echo "SCE-discord-bot:sce-discord-bot, discord-bot, discord, bot, d"
+    echo "cleezy:cleezy url z"
 }
 
 function print_usage {
