@@ -8,6 +8,7 @@ function print_repo_nicknames {
     echo "Quasar:quasar, q, idsmile"
     echo "SCE-discord-bot:sce-discord-bot, discord-bot, discord, bot, d"
     echo "cleezy:cleezy url z"
+    echo "sceta:sceta"
 }
 
 function print_usage {
@@ -39,12 +40,14 @@ CLARK_REPO_NAME="Clark"
 CLEEZY_REPO_NAME="cleezy"
 QUASAR_REPO_NAME="Quasar"
 SCE_DISCORD_BOT_REPO_NAME="SCE-discord-bot"
+SCETA_REPO_NAME="SCEta"
 
 CLARK_NAMES=("clark" "dog" "clrk" "ck" "c")
 CLEEZY_NAMES=("cleezy" "url" "z")
 MONGODB_NAMES=("mongo" "db" "mongodb")
 QUASAR_NAMES=("quasar" "q" "idsmile")
 SCE_DISCORD_BOT_NAMES=("sce-discord-bot" "discord-bot" "discord" "bot" "d")
+SCETA_NAMES=("sceta")
 
 VALID_COMMANDS=("link" "clone" "run" "setup" "completion")
 
@@ -77,6 +80,11 @@ function is_mongodb_alias {
 
 function is_discord_bot_alias {
     result=$(contains_element "$1" "${SCE_DISCORD_BOT_NAMES[@]}")
+    return $result
+}
+
+function is_sceta_alias {
+    result=$(contains_element "$1" "${SCETA_NAMES[@]}")
     return $result
 }
 
@@ -130,6 +138,12 @@ is_discord_bot_alias "$2"
 if [ $? -eq 0 ]
 then
     name=$SCE_DISCORD_BOT_REPO_NAME
+fi
+
+is_sceta_alias "$2"
+if [ $? -eq 0 ]
+then
+    name=$SCETA_REPO_NAME
 fi
 
 if [ -z "$name" ]
