@@ -8,7 +8,7 @@ function print_repo_nicknames {
     echo "Quasar:quasar, q, idsmile"
     echo "SCE-discord-bot:sce-discord-bot, discord-bot, discord, bot, d"
     echo "cleezy:cleezy url z"
-    echo "sceta:sceta"
+    echo "sceta:sceta, transit"
 }
 
 function print_usage {
@@ -47,7 +47,7 @@ CLEEZY_NAMES=("cleezy" "url" "z")
 MONGODB_NAMES=("mongo" "db" "mongodb")
 QUASAR_NAMES=("quasar" "q" "idsmile")
 SCE_DISCORD_BOT_NAMES=("sce-discord-bot" "discord-bot" "discord" "bot" "d")
-SCETA_NAMES=("sceta")
+SCETA_NAMES=("sceta" "transit")
 
 VALID_COMMANDS=("link" "clone" "run" "setup" "completion")
 

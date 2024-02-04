@@ -8,7 +8,7 @@ set CLEEZY_OPTIONS="cleezy" "url" "z"
 set MONGODB_OPTIONS="mongo" "db" "mongodb"
 set QUASAR_OPTIONS="quasar" "q" "idsmile"
 set DISCORD_BOT_OPTIONS="sce-discord-bot" "discord-bot" "discord" "bot" "d"
-set SCETA_OPTIONS="sceta"
+set SCETA_OPTIONS="sceta" "transit"
 set GITHUB_BASE_URL=https://github.com/SCE-Development/
 set CLARK_REPO_NAME=Clark
 set CLEEZY_REPO_NAME=cleezy
@@ -173,7 +173,7 @@ REM set the varible %name% to the resolved repo.
     echo MongoDB:mongo, db, mongodb
     echo Quasar:quasar, q, idsmile
     echo SCE-discod-bot:sce-discord-bot, discord-bot, discord, bot, d
-    echo SCEta:sceta
+    echo SCEta:sceta, transit
     REM assumes this was printed when the user incorrectly used the command
     goto :exit_error
 
