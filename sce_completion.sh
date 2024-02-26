@@ -10,11 +10,17 @@ _sce_completion() {
 
     if [[ ${prev} == "clone" || ${prev} == "run" || ${prev} == "link" ]] ; then
         COMPREPLY=( $(compgen -W "${repos}" -- ${cur}) )
+        if [[ ${#COMPREPLY[@]} -eq 0 ]]; then
+            COMPREPLY=( $(ls) )
+        fi
         return 0
     fi
 
     if [[ ${cur} == * ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        if [[ ${#COMPREPLY[@]} -eq 0 ]]; then
+            COMPREPLY=( $(ls) )
+        fi
         return 0
     fi
 }
